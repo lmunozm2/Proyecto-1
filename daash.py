@@ -242,32 +242,7 @@ def update_productivity_output(*args):
                       legend=dict(x=0, y=1))
     
     return [html.Div(output_prediccion), html.Div(output_intervalo)], fig
-    
-    #return f'La productividad sería de: {round(prediction[0],4)*100}%'
-"""def update_productivity_output(*args):
-    # Obtener los valores seleccionados en los controles
-    input_values = args[:-1]
-    department_finishing_value = args[-1]
-    
-    # Preparar los datos para la predicción
-    input_data = dict(zip([feature for feature in features if feature != "department_finishing"], input_values))
-    input_data["department_finishing"] = department_finishing_value
-    df = pd.DataFrame(input_data, index=[0])
 
-    #Prediccion
-    prediction = linreg.predict(df)
-
-    #Calcular el intervalo de confianza 
-    confidence_interval_lower , confidence_interval_upper = confidence_interval(X_train, y_train)
-    
-    #PAra que salga el intervalo de confianza
-    output_interval = f'Intervalo de confianza: [{round(confidence_interval_lower[0]*100, 2)}, {round(confidence_interval_upper[0]*100, 2)}]'
-     # Formatear la salida para mostrar la predicción y el intervalo de predicción
-    output_prediction = f'La productividad sería de: {round(prediction[0]*100, 2)}%'
-    
-    return output_interval , output_prediction
-"""    
-    
 
 if __name__ == '__main__':
     app.run_server(debug=True)
