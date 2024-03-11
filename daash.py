@@ -198,8 +198,10 @@ app.layout = html.Div([
     html.H3("Graficos de interes",style={'text-align': 'center', 'color': 'green','font-family': 'Verdana'}),
     # Gráfico de pastel para la distribución por departamento
     dcc.Graph(id='graph-department', figure=fig_department),
+    dcc.Graph(id = 'graph-prediction'),
     html.Div(id='prediction-interval-output', style={'text-align': 'center', 'font-family': 'Verdana'})    
     ], style={'margin': '20px', 'padding': '20px', 'border': '1px solid black','font-family': 'Verdana'})
+
 
 
 # Callback para actualizar la predicción de productividad cuando se cambian los controles
@@ -210,7 +212,7 @@ app.layout = html.Div([
     [Input('dropdown-department_finishing', 'value')]
 )
 def update_productivity_output(*args):
-    # Obtener los valores seleccionados en los controles
+     # Obtener los valores seleccionados en los controles
     input_values = args[:-1]
     department_finishing_value = args[-1]
     
@@ -242,7 +244,5 @@ def update_productivity_output(*args):
                       legend=dict(x=0, y=1))
     
     return [html.Div(output_prediccion), html.Div(output_intervalo)], fig
-
-
 if __name__ == '__main__':
     app.run_server(debug=True)
