@@ -205,7 +205,7 @@ app.layout = html.Div([
 # Callback para actualizar la predicción de productividad cuando se cambian los controles
 @app.callback(
     Output('productivity-output', 'children'),
-     #Output('prediction-interval-output','children')],
+    Output('graph-prediction','figure'),
     [Input('input-' + feature, 'value') for feature in features if feature != "department_finishing"] +
     [Input('dropdown-department_finishing', 'value')]
 )
@@ -222,7 +222,28 @@ def update_productivity_output(*args):
     # Realizar la predicción con el modelo
     prediction = linreg.predict(df)
     
-    return f'La productividad sería de: {round(prediction[0],4)*100}%'
+    #Calcular el intervalo de confianza 
+    confidence_interval_lower , confidence_interval_upper = confidence_interval(prediction, df, X_train, y_train)
+    
+    #Que muestre la prediccion y el intervalo de confianza 
+    output_prediccion = f'La productividad sería de: {round(prediction[0],4)*100}%'
+    output_intervalo =  f'Intervalo de confianza: [{round(confidence_interval_lower[0] * 100, 2)}, {round(confidence_interval_upper[0] * 100, 2)}]'
+        
+    # Crear el gráfico
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=[confidence_interval_lower[0], confidence_interval_upper[0]], y=['Prediction', 'Prediction'],
+                             fill='tonextx', fillcolor='rgba(173, 216, 230, 0.5)', line=dict(color='rgba(173, 216, 230, 1)', width=6), name='Intervalo de confianza'))
+    fig.add_trace(go.Scatter(x=[prediction[0] - 0.05, prediction[0] + 0.05], y=['Prediction', 'Prediction'],
+                             mode='lines', line=dict(color='rgba(0, 128, 0, 1)', width=8), name='Predicción'))
+    fig.update_layout(title='Intervalo de confianza con la predicción',
+                      xaxis_title='Productividad',
+                      yaxis_title='Predicción',
+                      showlegend=True,
+                      legend=dict(x=0, y=1))
+    
+    return [html.Div(output_prediccion), html.Div(output_intervalo)], fig
+    
+    #return f'La productividad sería de: {round(prediction[0],4)*100}%'
 """def update_productivity_output(*args):
     # Obtener los valores seleccionados en los controles
     input_values = args[:-1]
